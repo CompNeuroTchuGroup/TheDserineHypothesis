@@ -37,7 +37,7 @@ class BCM:
 
         theta_dot = - 1/self.tau_theta * (self.theta - y**2)
 
-        w_dot = R*x*y*(y - self.theta)/self.tau_w
+        w_dot = -R*x*y*(y - self.theta)/self.tau_w
         
         if not self.block_threshold:
             self.theta = self.theta + theta_dot
