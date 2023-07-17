@@ -17,7 +17,7 @@ end
 to go
   decide ;; decide whether or not to switch
   check-state
-  update-theta
+  if not block_threshold [update-theta]
   update-weights
 
   if ticks = switch_time [switch-reward]
@@ -33,7 +33,7 @@ to setup-mice
     set x_A 0
     set x_B 0
     set y 0
-    set theta 0.2
+    set theta start_theta
     set size 5
     set shape "mouse side"
     set color grey
@@ -126,7 +126,7 @@ to switch-reward
 end
 
 to-report compute-activation [pre-act]
-  ;; return the value of the activation which is f(x) = max(0.005,x)
+  ;; return the value of the activation which is f(x) = max(0.05,x)
   set activation pre-act
   ifelse pre-act > 0.05
   [ifelse pre-act > 1
@@ -149,9 +149,9 @@ to-report get-weight-B
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-434
+435
 10
-681
+682
 258
 -1
 -1
@@ -173,15 +173,15 @@ GRAPHICS-WINDOW
 1
 1
 ticks
-30.0
+30
 
 BUTTON
-158
-191
-231
-224
+50
+390
+130
+440
 NIL
-setup
+Setup
 NIL
 1
 T
@@ -193,11 +193,11 @@ NIL
 1
 
 BUTTON
-35
-409
-131
-442
-one step
+270
+390
+410
+440
+One Step
 go
 NIL
 1
@@ -210,12 +210,12 @@ NIL
 0
 
 SLIDER
-30
-45
-202
-78
+20
+125
+140
+158
 start_w_A
-start_w_A
+start_w_a
 0
 1
 0.6
@@ -225,12 +225,12 @@ NIL
 HORIZONTAL
 
 SLIDER
-30
-79
-202
-112
+20
+165
+140
+198
 start_w_B
-start_w_B
+start_w_b
 0
 1
 0.5
@@ -251,12 +251,12 @@ activation
 11
 
 BUTTON
-133
-409
-196
-442
+160
+390
+250
+440
 NIL
-go
+Go
 T
 1
 T
@@ -268,27 +268,27 @@ NIL
 0
 
 SLIDER
-225
-45
-397
-78
-Init_Reward_A
-Init_Reward_A
+300
+125
+420
+158
+init_reward_A
+init_reward_a
 -4
 0
--1.0
+-1
 0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-225
-78
-397
-111
+280
+170
+420
+203
 init_Reward_B
-init_Reward_B
+init_reward_b
 0
 4
 1.5
@@ -298,48 +298,48 @@ NIL
 HORIZONTAL
 
 PLOT
-683
+685
 10
-1067
-258
+1060
+250
 Activation Value
 time
 NIL
-0.0
-10.0
-0.0
-1.0
+0
+10
+0
+1
 true
 true
 "" ""
 PENS
-"activation" 1.0 0 -16777216 true "" "plot activation"
-"threshold" 1.0 0 -5298144 true "" "plot threshold"
+"activation" 1 0 -16777216 true "" "plot activation"
+"threshold" 1 0 -5298144 true "" "plot threshold"
 
 PLOT
-685
-259
-1062
-491
+690
+260
+1060
+510
 Ratio of state visit
 NIL
 NIL
-0.0
-10.0
-0.0
-1.0
+0
+10
+0
+1
 true
 true
 "" ""
 PENS
-"A ratio" 1.0 0 -2674135 true "" "plot count_A / (ticks + 1)"
-"B ratio" 1.0 0 -13345367 true "" "plot count_B / (ticks + 1)"
+"A ratio" 1 0 -2674135 true "" "plot count_A / (ticks + 1)"
+"B ratio" 1 0 -13345367 true "" "plot count_B / (ticks + 1)"
 
 INPUTBOX
-249
-114
-410
-174
+135
+40
+205
+83
 tau_theta
 0.2
 1
@@ -347,11 +347,11 @@ tau_theta
 Number
 
 INPUTBOX
-2
-114
-247
-174
-tau_W
+40
+40
+110
+83
+tau_w
 0.1
 1
 0
@@ -365,24 +365,24 @@ PLOT
 Weights
 NIL
 NIL
-0.0
-10.0
-0.0
-1.0
+0
+10
+0
+1
 true
 true
 "" ""
 PENS
-"W_A" 1.0 0 -16777216 true "" "plot get-weight-A"
-"W_B" 1.0 0 -2674135 true "" "plot get-weight-B"
+"W_A" 1 0 -16777216 true "" "plot get-weight-A"
+"W_B" 1 0 -2674135 true "" "plot get-weight-B"
 
 INPUTBOX
-226
-261
-387
-321
+35
+260
+155
+303
 switch_time
-400.0
+1000
 1
 0
 Number
@@ -410,10 +410,10 @@ reward_B
 11
 
 MONITOR
-436
-444
-522
-489
+440
+455
+526
+500
 NIL
 get-weight-A
 3
@@ -421,16 +421,81 @@ get-weight-A
 11
 
 MONITOR
-596
-445
-683
-490
+595
+455
+682
+500
 NIL
 get-weight-B
 3
 1
 11
 
+SLIDER
+160
+125
+280
+158
+start_theta
+start_theta
+0
+1
+0.02
+0.01
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+160
+10
+270
+40
+Parameters
+20
+0
+1
+
+TEXTBOX
+160
+95
+283
+116
+Initial Values
+20
+0
+1
+
+TEXTBOX
+15
+230
+181
+254
+Reverse Learning
+20
+0
+1
+
+TEXTBOX
+250
+230
+405
+255
+CBRs Knockout
+20
+0
+1
+
+SWITCH
+255
+265
+395
+298
+block_threshold
+block_threshold
+1
+1
+-1000
 @#$#@#$#@
 ## WHAT IS IT?
 
@@ -784,22 +849,22 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.3.0
+NetLogo 6.2.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
 default
-0.0
--0.2 0 0.0 1.0
-0.0 1 1.0 0.0
-0.2 0 0.0 1.0
+0
+-0.2 0 0 1
+0 1 1 0
+0.2 0 0 1
 link direction
 true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+
 @#$#@#$#@
