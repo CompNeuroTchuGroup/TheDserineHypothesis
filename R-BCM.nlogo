@@ -499,15 +499,51 @@ block_threshold
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+The central hypothesis of this model is that the D-serine molecule and its regulation mechanisms represent the biological implementation of the well-known BCM plasticity rule. Under the assumption that BCM plasticity is a valid learning model, the D-serine hypothesis implies that the effects of D-serine manipulations in animals can be described by manipulating the BCM equations.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+We simulate a mouse performing a place avoidance test with an aversive stimulus. The spatial environment is modeled as a discrete two-state space `S^1`, `S^2`. 
+The states are represented by one-hot encoding vectors 
+
+`x^1 = (1,0)` and `x^2 = (0, 1)`.
+
+The vectors are used as synaptic inputs for a single action neuron, describing the decision process of the mouse.
+At each time step `t`, the mouse occupies a state `S_t` with associated input vector `x_t`.
+The action neuron has a firing rate given by the scalar product of the input vector with its synaptic weights:
+
+`y_t = \vec w_t \cdot \vec x_t`
+    
+The mouse switches state at the next time step with a probability `p_change` given by:
+`p_change = \max(0.05, y_t)`
+
+After each transition, the synaptic weights and the synaptic threshold (i.e., the D-serine level) are updated:
+
+`w_{t+1} = w_t + Delta_w_t`
+
+`theta_{t+1} = theta_t + Delta_theta_t`
+
+The update rule consists of the BCM plasticity rule with the addition of a third reinforcement-signaling factor:
+
+`tau_w * Delta_w_t = - R(S_{t+1})*x_t(s_t)* y_t * (y_t - theta_t)`
+
+`tau_theta * Delta_theta_t = -( theta_t  - y_t^2)`
+
+The function $R$ can assume only two values, $R^{+}=1.5$ and $R^{-}=-1$, representing respectively a positive or neutral reinforcement and a negative reinforcement.
+During the first phase of training, we set $R(S^1) = R^{+}$ and $R(S^2)=R^{-}$; the values are switched during the second phase.
+At each simulation step, the agent performs a state transition $S_t \rightarrow S_{t+1}$, which determines the modification of the weights at that step, according to Table~\ref{tab:transitions}.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+* __tau_w__: the time constant for the weights' variation
+* __tau_theta__: the time constant for the threshold's variation
+* __start_w_A__: the initial value of the weight associated to state `A`
+* __start_w_B__: the initial value of the weight associated to state `B`
+* __start_theta__: The initial value of the threshold
+* __init_reward_A__: the reward associated to state `A` (in Phase 1)
+* __init_reward_B__: the reward associated to state `B` (in Phase 2)
+* __switch_time__: the number of time steps before the reward of state `A` and `B` are switched (beginning of phase 2)  
+* __block_threshold__: when selected, the threshold (_i.e._, the D-serine level) is kept fixed.
 
 ## THINGS TO NOTICE
 
@@ -517,21 +553,10 @@ block_threshold
 
 (suggested things for the user to try to do (move sliders, switches, etc.) with the model)
 
-## EXTENDING THE MODEL
-
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
-
-## NETLOGO FEATURES
-
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
-
-## RELATED MODELS
-
-(models in the NetLogo Models Library and elsewhere which are of related interest)
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+This `NetLogo` model was developed by Pietro Verzelli and Lorenzo Squadrani, based on the paper [Squadrani _et al._ (2023)](LINK TO THE PAPER).
 @#$#@#$#@
 default
 true
