@@ -1,7 +1,7 @@
 import numpy as np
 from tqdm import tqdm
 import pickle
-from model import *
+from TheDserineHypothesis.model_and_scripts.model import *
 
 # Possible states
 x1, x2 = np.array([1., 0.]), np.array([0., 1.])
