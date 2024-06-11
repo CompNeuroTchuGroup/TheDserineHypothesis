@@ -1,4 +1,4 @@
-# Deciphering the astrocytic contribution to learning and relearning
+# Astrocytes enhance plasticity response during reversal learning
 
 This repository hosts the code used to produce and analyze the results of the paper *Deciphering the astrocytic contribution to learning and relearning, 2023*.
 
